@@ -1,6 +1,7 @@
 #include "enemy.h"
 
 #include "display.h"
+#include "enemy.h"
 #include "player.h"
 
 void EnemyInit(Enemy* e, OBJ_ATTR* attrSlot, EnemyType type, u16 angle, Fx32 hp, Fx32 dmg) {
@@ -9,15 +10,30 @@ void EnemyInit(Enemy* e, OBJ_ATTR* attrSlot, EnemyType type, u16 angle, Fx32 hp,
 	e->type = type;
 	e->cooldownTimer = 0;
 
-	VecFx32 centerPos = (VecFx32){float2fx(PLAYER_POS_X), fx2int(float2fx(PLAYER_POS_Y)), 0};
-	e->pos = centerPos;
-	VecFx32 rotationOffset = (VecFx32){lu_cos(angle), lu_sin(angle), 0};
-	vec_scale(&(rotationOffset), &(rotationOffset), float2fx(100.0));
-	vec_add(&(e->pos), &(e->pos), &rotationOffset);
+	const VecFx32 centerPos = (VecFx32){
+		.x = float2fx(PLAYER_POS_X + PLAYER_WIDTH / 2.0f - ENEMY_WIDTH / 2.0f),
+		.y = float2fx(PLAYER_POS_Y + PLAYER_HEIGHT / 2.0f - ENEMY_HEIGHT / 2.0f),
+		.z = (Fx32)0,
+	};
 
-	vec_sub(&(e->vel), &centerPos, &(e->pos));
-	vec_scale(&(e->vel), &(e->vel), float2fx(1.0 / 100.0));
-	vec_scale(&(e->vel), &(e->vel), float2fx(1.0 / 60.0));
+	const VecFx32 directionFromCenter = (VecFx32){
+		.x = lu_cos(angle),
+		.y = lu_sin(angle),
+		.z = (Fx32)0,
+	};
+
+	VecFx32 directionToCenter = (VecFx32){
+		.x = -lu_cos(angle),
+		.y = -lu_sin(angle),
+		.z = (Fx32)0,
+	};
+
+	VecFx32 posOffset;
+	vec_scale(&posOffset, &directionFromCenter, float2fx(ENEMY_SPAWN_RADIUS));
+	vec_add(&(e->pos), &centerPos, &posOffset);
+
+	e->vel = directionToCenter;
+	vec_scale(&(e->vel), &(e->vel), float2fx(ENEMY_SPEED));
 
 	e->hp = hp;
 	e->dmg = dmg;
@@ -27,9 +43,10 @@ void EnemyInit(Enemy* e, OBJ_ATTR* attrSlot, EnemyType type, u16 angle, Fx32 hp,
 }
 
 void EnemyUpdate(Enemy* e) {
-	// vec_add(&(e->pos), &(e->pos), &(e->vel));
+	vec_add(&(e->pos), &(e->pos), &(e->vel));
 
-	if (e->pos.x > 0 && fx2int(e->pos.x) < SCREEN_WIDTH && e->pos.y > 0 && fx2int(e->pos.y) < SCREEN_HEIGHT) {
+	if (e->pos.x + float2fx(ENEMY_WIDTH / 2.0f) > (Fx32)0 && e->pos.x < int2fx(SCREEN_WIDTH) && e->pos.y + float2fx(ENEMY_HEIGHT / 2.0f) > 0 &&
+		fx2int(e->pos.y) < SCREEN_HEIGHT) {
 		obj_set_pos(e->enemyAttributes, fx2int(e->pos.x), fx2int(e->pos.y));
 		obj_unhide(e->enemyAttributes, ATTR0_REG);
 	} else {

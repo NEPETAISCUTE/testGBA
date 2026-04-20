@@ -3,6 +3,15 @@
 
 #include "common.h"
 
+#define ENEMY_WIDTH 16
+#define ENEMY_HEIGHT 16
+
+#define ENEMY_SPAWN_RADIUS 50.0f
+#define ENEMY_SPEED 0.1f
+
+// in frames
+#define ENEMY_SPAWN_TIME 60
+
 typedef enum EnemyType {
 	ENEMY_TYPE_NORMAL = 0,
 } EnemyType;

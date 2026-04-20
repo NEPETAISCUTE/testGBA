@@ -6,15 +6,17 @@
 
 #define PLAYER_TILE_ID 1
 
-#define PLAYER_POS_X (SCREEN_WIDTH / 2) - (64 / 2)
-#define PLAYER_POS_Y (SCREEN_HEIGHT / 2) - (64 / 2)
-#define PLAYER_WIDTH 0.5
-#define PLAYER_HEIGHT 0.5
+#define PLAYER_WIDTH_SCALE 1.0f
+#define PLAYER_HEIGHT_SCALE 1.0f
+#define PLAYER_WIDTH 64.0f * PLAYER_WIDTH_SCALE
+#define PLAYER_HEIGHT 64.0f * PLAYER_HEIGHT_SCALE
+#define PLAYER_POS_X (SCREEN_WIDTH / 2.0f) - (PLAYER_WIDTH / 2.0f)
+#define PLAYER_POS_Y (SCREEN_HEIGHT / 2.0f) - (PLAYER_HEIGHT / 2.0f)
 
-#define PLAYER_BASE_HP 10.0
-#define PLAYER_BASE_MP 0.0
+#define PLAYER_BASE_HP 10.0f
+#define PLAYER_BASE_MP 0.0f
 
-#define PLAYER_BASE_DAMAGE 1.0
+#define PLAYER_BASE_DAMAGE 1.0f
 
 typedef struct Player {
 	OBJ_ATTR* playerAttributes;

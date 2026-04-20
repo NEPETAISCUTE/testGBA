@@ -43,14 +43,14 @@ int main(void) {
 			playerShootBullet(&p);
 		}
 
-		if (frameCounter < 16) {  //(frameCounter % 600 == 0) {
+		if (frameCounter % ENEMY_SPAWN_TIME == 0) {
 			for (size_t i = 0; i < 64; i++) {
 				if (!enemyIsUsed[i]) {
 					enemyIsUsed[i] = true;
 					OBJ_ATTR* attr = displayAllocObjAttr();
 					if (attr == NULL) break;
 
-					EnemyInit(&(enemies[i]), attr, ENEMY_TYPE_NORMAL, frameCounter * 4096, float2fx(10.0), float2fx(1.0));
+					EnemyInit(&(enemies[i]), attr, ENEMY_TYPE_NORMAL, rand(), float2fx(10.0), float2fx(1.0));
 					break;
 				}
 			}

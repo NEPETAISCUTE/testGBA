@@ -18,7 +18,7 @@ void playerInit(Player* p, OBJ_ATTR* attrSlot) {
 void playerUpdate(Player* p, s16 rotChange) {
 	p->rotation += rotChange;
 	obj_aff_identity(p->playerAffine);
-	obj_aff_rotscale(p->playerAffine, float2fx(2.0f), float2fx(2.0f), p->rotation);
+	obj_aff_rotscale(p->playerAffine, float2fx(1.0f / PLAYER_WIDTH_SCALE), float2fx(1.0f / PLAYER_HEIGHT_SCALE), p->rotation);
 
 	for (u32 i = 0; i < 64; i++) {
 		Bullet* b = &(p->bulletArray[i]);
@@ -56,7 +56,7 @@ bool playerShootBullet(Player* p) {
 	// 32.0 is the size of the player divided by 2
 	// 4.0 is the size of the bullet divided by 2
 	// this is just to center the bullet on the player as initial position, we'll then offset it to make it shoot out of the cannon instead
-	VecFx32 pos = (VecFx32){float2fx(PLAYER_POS_X + 32.0 - 4), float2fx(PLAYER_POS_Y + 32.0 - 4), 0};
+	VecFx32 pos = (VecFx32){float2fx(PLAYER_POS_X + PLAYER_WIDTH / 2.0f - 4), float2fx(PLAYER_POS_Y + PLAYER_HEIGHT / 2.0f - 4), 0};
 	vec_add(&pos, &pos, &bulletOffset);
 	VecFx32 vel = (VecFx32){-lu_sin(p->rotation), -lu_cos(p->rotation), 0};
 	vec_scale(&vel, &vel, float2fx(0.25));
